@@ -1,5 +1,5 @@
 #include <iostream>
-#include <algorithm> 
+#include <algorithm>
 #include <vector>
 
 using namespace std;
@@ -21,7 +21,8 @@ void reHangUp(int root){
     }
 }
 
-void calculateHeights(int root){    
+// deprecated
+void calculateHeights(int root){
     int max_height = 0;
     for (vector<int>::iterator it = graph[root].begin(); it != graph[root].end(); it++){
         int desc = *it;
@@ -29,25 +30,26 @@ void calculateHeights(int root){
         if (heights[desc] + 1 > max_height){
             max_height = heights[desc] + 1;
         }
-    } 
-    heights[root] = max_height + graph[root].size();      
+    }
+    heights[root] = max_height + graph[root].size();
 }
 
-void solve(int root, int time){    
-    answers[root] = time;
-    if (time > max_time)
-        max_time = time;
+void solve(int root){
     vector<pair<int, int>> child;
+    int max_time = -1, min_time = 0, ans_root = 0;
     for (vector<int>::iterator it = graph[root].begin(); it != graph[root].end(); it++){
-        int desc = *it;
-        child.push_back(make_pair(heights[desc], desc));
+    	int desc = *it;
+    	solve(desc);
+        child.push_back(make_pair(answers[desc], desc));
     }
-    sort(child.begin(), child.end());  
-    
-    for (int i = child.size() - 1; i >= 0; i--){         
-        solve(child[i].second, time + 1);
-        time++;
-    }        
+    sort(child.begin(), child.end());
+    int m = child.size();;
+    for (int i = 0; i < child.size(); i++){
+    	if (ans_root < child[m - 1 - i].first + i + 1){
+    		ans_root = child[m - 1 - i].first + i + 1;
+    	}
+    }
+    answers[root] = ans_root;
 }
 
 void print_graph(){
@@ -71,7 +73,7 @@ void print_vector(vector<int> v){
 int main(){
     int n, tanya;
     cin >> n;
-    
+
     answers.resize(n + 1, -1);
     heights.resize(n + 1, -1);
     parents.resize(n + 1, -1);
@@ -80,7 +82,7 @@ int main(){
         int son = -1;
         while (son != 0){
             cin >> son;
-            if (son != 0){                
+            if (son != 0){
                 graph[i].push_back(son);
                 parents[son] = i;
             }
@@ -90,10 +92,10 @@ int main(){
     // print_graph();
     reHangUp(tanya);
     // print_graph();
-    calculateHeights(tanya);
+    // calculateHeights(tanya);
     // print_vector(heights);
-    solve(tanya, 0);
+    solve(tanya);
     // print_vector(answers);
-    cout << max_time;
+    cout << answers[tanya];
     return 0;
 }
