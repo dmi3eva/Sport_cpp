@@ -21,19 +21,6 @@ void reHangUp(int root){
     }
 }
 
-// deprecated
-void calculateHeights(int root){
-    int max_height = 0;
-    for (vector<int>::iterator it = graph[root].begin(); it != graph[root].end(); it++){
-        int desc = *it;
-        calculateHeights(desc);
-        if (heights[desc] + 1 > max_height){
-            max_height = heights[desc] + 1;
-        }
-    }
-    heights[root] = max_height + graph[root].size();
-}
-
 void solve(int root){
     vector<pair<int, int>> child;
     int max_time = -1, min_time = 0, ans_root = 0;
@@ -89,13 +76,8 @@ int main(){
         }
     }
     cin >> tanya;
-    // print_graph();
     reHangUp(tanya);
-    // print_graph();
-    // calculateHeights(tanya);
-    // print_vector(heights);
     solve(tanya);
-    // print_vector(answers);
     cout << answers[tanya];
     return 0;
 }
